@@ -1,22 +1,41 @@
-import { Stack } from 'expo-router';
-import { StyleSheet, View } from 'react-native';
+// import { useQuery } from '@tanstack/react-query';
+import { FlatList } from 'react-native';
+import Container from '~/components/Container';
+// import Card from '~/components/home/card';
+// import Discovery from '~/components/home/discovery';
+// import MainHeader from '~/components/home/main-header';
+// import LoadingIndicator from '~/components/loading-indicator';
+import Text from '~/components/text';
+import { PROPERTIES } from '~/core/constants/data';
+// import { client } from '~/core/api/client';
 
-import { ScreenContent } from '~/components/ScreenContent';
+const Home = () => {
+  // const { data, isLoading } = useQuery({
+  //   queryKey: ['properties'],
+  //   queryFn: async () => {
+  //     const response = await client.get('/properties');
+  //     return response.data.properties;
+  //   },
+  // });
 
-export default function Home() {
+  // if (!data || isLoading) {
+  //   return <LoadingIndicator />;
+  // }
+
   return (
-    <>
-      <Stack.Screen options={{ title: 'Tab One' }} />
-      <View style={styles.container}>
-        <ScreenContent path="app/(tabs)/index.tsx" title="Tab One" />
-      </View>
-    </>
+    <Container>
+      {/* <MainHeader />
+      <FlatList
+        // data={data.reverse()}
+        // ListHeaderComponent={() => <Discovery properties={data.reverse()} />}
+        data={PROPERTIES}
+        renderItem={({ item }) => <Card property={item} />}
+        keyExtractor={(item) => item.id}
+        showsVerticalScrollIndicator={false}
+      /> */}
+      <Text>Home</Text>
+    </Container>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 24,
-  },
-});
+export default Home;
