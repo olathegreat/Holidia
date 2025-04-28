@@ -1,6 +1,6 @@
 import '../global.css';
 import  {GestureHandlerRootView} from 'react-native-gesture-handler'; 
-
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { Stack } from 'expo-router';
 import { ReactNode } from 'react';
 import { ThemeContext, ThemeProvider } from '@react-navigation/native';
@@ -13,9 +13,15 @@ export const unstable_settings = {
 
 const Providers = ({children}:{children:ReactNode})=>{
   return (
-    <GestureHandlerRootView >
+    <GestureHandlerRootView style={{flex:1}} >
+
       <ThemeProvider value={theme}>
-      {children}
+        <BottomSheetModalProvider>
+          <ThemeContext.Provider value={theme}>
+            {children}
+          </ThemeContext.Provider>
+        </BottomSheetModalProvider>
+      
       </ThemeProvider>
       
     </GestureHandlerRootView>
@@ -29,7 +35,9 @@ export default function RootLayout() {
    
     <Stack>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+      <Stack.Screen name="search" options={{ headerShown: false }} />
+      <Stack.Screen name="properties/[id]" options={{ headerShown: false }} />
+
     </Stack>
     </Providers>
   );

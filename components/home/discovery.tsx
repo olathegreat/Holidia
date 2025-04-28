@@ -14,7 +14,7 @@ const Discovery = ({ properties }: DiscoveryProps) => {
   return (
     <>
     
-      <View
+      <Pressable
         style={{
           marginHorizontal: 16,
           marginBottom: 16,
@@ -24,13 +24,15 @@ const Discovery = ({ properties }: DiscoveryProps) => {
           flexDirection: 'row',
           alignItems: 'center',
         }}
+
+        onPress={() => router.navigate('/search')}
        
       >
         <Ionicons name="search" size={24} color={'gray'} />
         <View style={{ marginHorizontal: 16 }}>
           <Text style={{ color: 'gray' }}>Where to ?</Text>
         </View>
-      </View>
+      </Pressable>
 
       <FlatList
         data={properties.reverse()}
@@ -61,6 +63,13 @@ const Discovery = ({ properties }: DiscoveryProps) => {
                     flexDirection: 'row',
                     alignItems: 'center',
                     justifyContent: 'space-between',
+                  }}
+
+                  onPress={()=>{
+                    router.navigate({
+                      pathname: '/properties/[id]',
+                      params: { id: item.id },
+                    })
                   }}
                 >
                   <View>
