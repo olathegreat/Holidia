@@ -1,6 +1,9 @@
 // import { useQuery } from '@tanstack/react-query';
-import { FlatList } from 'react-native';
+import { FlatList, View } from 'react-native';
 import Container from '~/components/Container';
+import Card from '~/components/home/card';
+import Discovery from '~/components/home/discovery';
+import MainHeader from '~/components/home/main-header';
 // import Card from '~/components/home/card';
 // import Discovery from '~/components/home/discovery';
 // import MainHeader from '~/components/home/main-header';
@@ -24,16 +27,18 @@ const Home = () => {
 
   return (
     <Container>
-      {/* <MainHeader />
+      {/* <Text variant="title">Home</Text> */}
+
+      <MainHeader/>
+
       <FlatList
-        // data={data.reverse()}
-        // ListHeaderComponent={() => <Discovery properties={data.reverse()} />}
         data={PROPERTIES}
+        ListHeaderComponent={()=><Discovery properties={PROPERTIES}/>}
         renderItem={({ item }) => <Card property={item} />}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id.toString()}
         showsVerticalScrollIndicator={false}
-      /> */}
-      <Text>Home</Text>
+      />
+   
     </Container>
   );
 };
