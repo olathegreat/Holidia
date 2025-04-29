@@ -6,6 +6,7 @@ import { ReactNode } from 'react';
 import { ThemeContext, ThemeProvider } from '@react-navigation/native';
 import theme from '~/core/theme/use-theme-config';
 import { APIProvider } from '~/core/api/api-provider';
+import { Toaster } from 'sonner-native';
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
@@ -27,6 +28,9 @@ const Providers = ({children}:{children:ReactNode})=>{
       
       </ThemeProvider>
       </APIProvider>
+
+
+      <Toaster/>
       
     </GestureHandlerRootView>
   );

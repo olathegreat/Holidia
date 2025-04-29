@@ -6,6 +6,7 @@ import BottomSheet, {
   BottomSheetView,
 } from '@gorhom/bottom-sheet';
 import { nanoid } from 'nanoid/non-secure';
+import { toast } from 'sonner-native';
 import { FlashList } from '@shopify/flash-list';
 import { router, useLocalSearchParams } from 'expo-router';
 import { SquircleButton } from 'expo-squircle-view';
@@ -85,7 +86,7 @@ const Property = ({}: Props) => {
   const totalPrice = days * property.price_per_night;
   return (
     <Container>
-      <Header title="property" />
+      <Header title="Property" />
 
       <ScrollView className="bg-gray-100 p-4">
         <Propertyimage
@@ -94,9 +95,17 @@ const Property = ({}: Props) => {
           rating={5}
         />
 
-        <Text variant="subtitle-primary" className="mt-4">
-          {property?.name}
-        </Text>
+        <View className="flex flex-row items-center justify-between">
+          <Text variant="subtitle-primary" className="mt-4">
+            {property.name}
+          </Text>
+          <View className="flex flex-row items-center justify-center">
+            <Ionicons name="pricetag" size={12} color={PRIMARY} />
+            <Text variant="body-primary" className="ml-2">
+              ${property.price_per_night} per night
+            </Text>
+          </View>
+        </View>
 
         <View className="mt-2 flex flex-row items-center">
           <Ionicons name="location" size={16} color={PRIMARY} />
@@ -113,46 +122,7 @@ const Property = ({}: Props) => {
         <AmenitiesList amenities={property.amenities} />
       </ScrollView>
 
-      <View className="absolute bottom-0 left-0 right-0 flex-row items-center justify-between bg-white p-4 shadow-md">
-      {hasSelectedDates ? (
-          <Pressable
-            className="mr-4"
-            onPress={() => {
-              bottomSheetRef.current?.expand();
-            }}>
-            <View className="flex flex-row items-center">
-              <Ionicons name="pricetag" color={PRIMARY} size={16} />
-              <Text variant="body-primary" className="text-center">
-                ${totalPrice}
-              </Text>
-            </View>
-            <Text variant="caption" className="text-center underline">
-              {days === 1 ? '1 Night' : `${days} nights`}
-            </Text>
-          </Pressable>
-        ) : (
-          <Pressable
-            className="mr-4 flex flex-row items-center"
-            onPress={() => {
-              bottomSheetRef.current?.expand();
-            }}>
-            <Ionicons name="calendar-outline" size={24} color={PRIMARY} />
-            <Text variant="body-primary" className="ml-2 text-center underline">
-              Select dates
-            </Text>
-          </Pressable>
-        )}
-        
-        
-        <Pressable
-          className="flex-grow"
-          onPress={() => bottomSheetRef.current?.expand()}
-          style={{ borderRadius: 16, backgroundColor: PRIMARY, paddingVertical: 16 }}>
-          <Text variant="body" className="text-center text-white">
-            Book Now
-          </Text>
-        </Pressable>
-      </View>
+      
 
       <BottomSheet
         ref={bottomSheetRef}
@@ -162,18 +132,25 @@ const Property = ({}: Props) => {
         enablePanDownToClose={true}
         enableDynamicSizing={false}>
         <BottomSheetView style={{ flex: 1 }}>
-          
-
-          <BottomSheetView style={{ flex: 1 }}>
-            <ScrollView>
-            <Calendar.List
-              CalendarScrollComponent={SafeFlashList}
-              calendarActiveDateRanges={calendarActiveDateRanges}
-              calendarMinDateId={today}
-              onCalendarDayPress={onCalendarDayPress}
-              theme={calendarTheme}
-            />
-            </ScrollView>
+        <View className="my-4 flex flex-row items-center justify-between px-4">
+            <View className="flex flex-row items-center justify-center">
+              <Ionicons name="wallet" color={PRIMARY} size={24} />
+              <Text variant="subtitle" className="mx-4">
+                Price : ${hasSelectedDates ? totalPrice : property.price_per_night}
+                {!hasSelectedDates && ' per night'}
+              </Text>
+            </View>
+          </View>
+          <BottomSheetView style={{ flex: 1, paddingHorizontal: 4 }}>
+            
+              <Calendar.List
+                CalendarScrollComponent={SafeFlashList}
+                calendarActiveDateRanges={calendarActiveDateRanges}
+                calendarMinDateId={today}
+                onCalendarDayPress={onCalendarDayPress}
+                theme={calendarTheme}
+              />
+            
           </BottomSheetView>
 
           <Pressable
@@ -204,8 +181,7 @@ const Property = ({}: Props) => {
               };
               console.log({ cartItem });
               addItem(cartItem);
-               router.push('/checkout');
-
+              bottomSheetRef.current?.close();
             }}
             className="z-50 m-8 flex flex-row items-center justify-center gap-2 rounded-xl p-4">
             <Ionicons name="checkmark-circle" color={'white'} size={20} />
@@ -215,6 +191,50 @@ const Property = ({}: Props) => {
           </Pressable>
         </BottomSheetView>
       </BottomSheet>
+
+
+      <View className="absolute bottom-0 left-0 right-0 flex-row items-center justify-between bg-white p-4 shadow-md">
+        {hasSelectedDates ? (
+          <Pressable
+            className="mr-4"
+            onPress={() => {
+              bottomSheetRef.current?.expand();
+            }}>
+            <View className="flex flex-row items-center">
+              <Ionicons name="pricetag" color={PRIMARY} size={16} />
+              <Text variant="body-primary" className="text-center">
+                ${totalPrice}
+              </Text>
+            </View>
+            <Text variant="caption" className="text-center underline">
+              {days === 1 ? '1 Night' : `${days} nights`}
+            </Text>
+          </Pressable>
+        ) : (
+          <Pressable
+            className="mr-4 flex flex-row items-center"
+            onPress={() => {
+              bottomSheetRef.current?.expand();
+            }}>
+            <Ionicons name="calendar-outline" size={24} color={PRIMARY} />
+            <Text variant="body-primary" className="ml-2 text-center underline">
+              Select dates
+            </Text>
+          </Pressable>
+        )}
+
+        <Pressable
+          className="flex-grow"
+          onPress={() => {
+            toast.success('Property added to cart');
+            router.push('/checkout');
+          }}
+          style={{ borderRadius: 16, backgroundColor: PRIMARY, paddingVertical: 16 }}>
+          <Text variant="body" className="text-center text-white">
+            Book Now
+          </Text>
+        </Pressable>
+      </View>
     </Container>
   );
 };
