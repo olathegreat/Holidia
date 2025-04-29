@@ -6,7 +6,10 @@ import Header from '~/components/header'
 import { Ionicons } from '@expo/vector-icons'
 import { PROPERTIES } from '~/core/constants/data'
 import Card from '~/components/search/card'
-
+import { useQuery } from '@tanstack/react-query';
+import { client } from '~/core/api/client'
+import {useDebounce} from '@uidotdev/usehooks'
+import LoadingIndicator from '~/components/loading-indicator'
 
 
 type Props = {
@@ -14,7 +17,27 @@ type Props = {
 }
 
 const Search = ({}:Props) => {
-    const [searchQuery, setSearchQuery] = useState('')
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const debouncedSearchQuery = useDebounce(searchQuery, 300);
+    const {data:properties, isLoading} = useQuery({
+      queryKey: ['properties-search', debouncedSearchQuery],
+      queryFn: async()=>{
+
+        if(debouncedSearchQuery){
+          const response = await client.get(`properties/search?city=${debouncedSearchQuery}`);
+          return response.data.properties
+        }else{
+          return []
+        }
+        
+      },
+      staleTime: 1000 * 60
+    })
+  
+    // if(!data || isLoading){
+    //   return <LoadingIndicator/>
+    // }
   return (
     <Container>
       <Header   title="search"/>
@@ -39,6 +62,9 @@ const Search = ({}:Props) => {
          renderItem={({item})=>(
             <Card property={item}/>
          )}
+
+
+         ListFooterComponent={isLoading? <LoadingIndicator/>: null}
       
       />
     </Container>
